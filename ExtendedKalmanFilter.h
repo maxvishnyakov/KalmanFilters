@@ -40,14 +40,14 @@ public:
     float update(const typename Model::measurement_vec & measurements,
                  float dt)
     {
-        typename Model::state_vec pred_state;
-        typename Model::covariance_mat pred_P;
+        decltype (Model::state) pred_state;
+        decltype (Model::P) pred_P;
         std::tie(pred_state, pred_P) = predict(dt);
         typename Model::measurement_vec pred_meas = model_.get_measurements(pred_state);
         auto H = model_.measurement_jakobian(pred_state);
         auto S = H * pred_P * arma::trans(H) + model_.R;
         auto W = pred_P * arma::trans(H) * arma::inv(S);
-        auto nev = measurements - pred_meas;
+        typename Model::measurement_vec nev = measurements - pred_meas;
         residual_check<Model>(nev);
         model_.state = pred_state + W * nev;
         model_.P = pred_P - W * S * arma::trans(W);
@@ -63,12 +63,12 @@ public:
 private:
     Model & model_;
 
-    std::tuple<typename Model::state_vec,
-               typename Model::covariance_mat> predict(float dt)
+    std::tuple<decltype (Model::state),
+               decltype (Model::P)> predict(float dt)
     {
-        typename Model::state_vec state = model_.f_func(model_.state, dt);
-        typename Model::covariance_mat A = model_.f_jakobian(model_.state, dt);
-        typename Model::covariance_mat P = A * P * trans(A) + model_.Q;
+        decltype (Model::state) state = model_.f_func(model_.state, dt);
+        decltype (Model::P) A = model_.f_jakobian(model_.state, dt);
+        decltype (Model::P) P = A * P * trans(A) + model_.Q;
         return std::make_tuple(state, P);
     }
 
@@ -76,7 +76,7 @@ private:
                     const typename Model::measurement_vec & pred_meas,
                     const arma::fmat & S)
     {
-        auto dx = meas - pred_meas;
+        typename Model::measurement_vec dx = meas - pred_meas;
         residual_check<Model>(dx);
         float e = 0.5f * arma::sum((dx % solve(S, dx)));
         e += 0.5f * (size(meas).n_rows * static_cast<float>(std::log(2.0 * M_PI))) +
