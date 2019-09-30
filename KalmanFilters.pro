@@ -10,7 +10,8 @@ SOURCES += \
 HEADERS += \
     CheckResidual.h \
     ConstVelocityModel.h \
-    ExtendedKalmanFilter.h
+    ExtendedKalmanFilter.h \
+    MathExpressions.h
 
 LIBS += -larmadillo
 LIBS += -lblas

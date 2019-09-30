@@ -1,12 +1,19 @@
 #include "ConstVelocityModel.h"
 #include <cmath>
 
-ConstVelocityModel::covariance_mat ConstVelocityModel::Q(arma::fill::zeros);
+ConstVelocityModel::state_covariance ConstVelocityModel::Q
+{
+    { 7.2f,     0,  1.8f,     0},
+    {    0,  7.2f,     0,  1.8f},
+    { 1.8f,     0,  5.0f,  1.0f},
+    {    0,  1.8f,  1.0f,  5.0f}
+};
 
 ConstVelocityModel::ConstVelocityModel(const stations_pos &pos)
     : st_pos(pos)
 {
-
+    R = {{0.1f,    0},
+         {   0, 1.0f}};
 }
 
 ConstVelocityModel::measurement_vec
@@ -53,10 +60,10 @@ ConstVelocityModel::f_func(const ConstVelocityModel::state_vec &state, float dt)
     return st;
 }
 
-ConstVelocityModel::covariance_mat
+ConstVelocityModel::state_covariance
 ConstVelocityModel::f_jakobian(const ConstVelocityModel::state_vec &state, float dt)
 {
-    return covariance_mat{
+    return state_covariance{
         {1.0,   0,  dt,   0},
         {  0, 1.0,   0,  dt},
         {  0,   0, 1.0,   0},
