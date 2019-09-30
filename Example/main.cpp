@@ -1,6 +1,6 @@
 #include <iostream>
 #include "ConstVelocityModel.h"
-#include "ExtendedKalmanFilter.h"
+#include "KalmanFilters/ExtendedKalmanFilter.h"
 
 using namespace std;
 
@@ -16,7 +16,7 @@ int main()
         {   0,    0,   0,  5000000}
     };
     ConstVelocityModel::measurement_vec meas = {1.0f, 1.1f};
-    ExtendedKalmanFilter<ConstVelocityModel> filter(model);
+    KalmanFilters::ExtendedKalmanFilter<ConstVelocityModel> filter(model);
     cout << filter.validate_measurements(meas, 6) << endl;
     filter.update(meas, 6);
     model.state.print("state");

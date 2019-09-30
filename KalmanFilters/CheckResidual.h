@@ -3,6 +3,8 @@
 
 #include <type_traits>
 
+namespace KalmanFilters {
+
 //struct for checking the residual check function in model class
 template <typename T, typename Input>
 struct has_residual_check{
@@ -33,5 +35,6 @@ void residual_check(Input & arg)
     T::residual_check(arg);
 }
 
+} //namespace KalmanFilters
 
 #endif // CHECKRESIDUAL_H

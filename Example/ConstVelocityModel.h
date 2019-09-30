@@ -59,7 +59,7 @@ public:
 
     //Optionally function for handle exceptions in residual
     //You may not define this function
-    void residual_check(ConstVelocityModel::measurement_vec &residual);
+    void residual_check(measurement_vec &residual);
 };
 
 #endif // CONSTVELOCITYMODEL_H

@@ -11,7 +11,8 @@ HEADERS += \
     KalmanFilters/CheckResidual.h \
     Example/ConstVelocityModel.h \
     KalmanFilters/ExtendedKalmanFilter.h \
-    Example/MathExpressions.h
+    Example/MathExpressions.h \
+    KalmanFilters/GaussPdf.h
 
 LIBS += -larmadillo
 LIBS += -lblas
