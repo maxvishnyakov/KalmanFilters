@@ -3,7 +3,6 @@
 
 #include <tuple>
 #include <cmath>
-#include <armadillo>
 
 #include "CheckResidual.h"
 #include "GaussPdf.h"
@@ -36,12 +35,12 @@ public:
 
         measurement_vec     pred_meas   = model_.get_measurements(pred_state);
         m_jakobian_mat      H           = model_.measurement_jakobian(pred_state);
-        meas_covariance     S           = H * pred_P * arma::trans(H) + model_.R;
+        meas_covariance     S           = H * pred_P * transpose(H) + model_.R;
         measurement_vec     residual    = measurements - pred_meas;
 
         residual_check<Model>(residual);
 
-        return as_scalar((arma::trans(residual) * arma::inv(S) * residual));
+        return to_scalar((transpose(residual) * inverse(S) * residual));
     }
 
     float update(const measurement_vec & measurements,
@@ -53,14 +52,14 @@ public:
 
         measurement_vec     pred_meas   = model_.get_measurements(pred_state);
         m_jakobian_mat      H           = model_.measurement_jakobian(pred_state);
-        meas_covariance     S           = H * pred_P * arma::trans(H) + model_.R;
-        filter_gain_mat     W           = pred_P * arma::trans(H) * arma::inv(S);
+        meas_covariance     S           = H * pred_P * transpose(H) + model_.R;
+        filter_gain_mat     W           = pred_P * transpose(H) * inverse(S);
         measurement_vec     residual    = measurements - pred_meas;
 
         residual_check<Model>(residual);
 
         model_.state    = pred_state + (W * residual);
-        model_.P        = pred_P - W * S * arma::trans(W);
+        model_.P        = pred_P - W * S * transpose(W);
         //FIXME: need to make gauss_pdf function optional
         return gauss_pdf<Model>(measurements, pred_meas, S);
     }
@@ -79,7 +78,7 @@ private:
     {
         state_vec           state   = model_.f_func(model_.state, dt);
         state_covariance    A       = model_.f_jakobian(model_.state, dt);
-        state_covariance    P       = A * model_.P * arma::trans(A) + model_.Q;
+        state_covariance    P       = A * model_.P * transpose(A) + model_.Q;
         return std::make_tuple(state, P);
     }
 };

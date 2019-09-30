@@ -9,30 +9,28 @@ namespace KalmanFilters {
 template<typename Model,
          typename measurement,
          typename covariance>
-float gauss_pdf(const measurement & meas,
-                const measurement & pred_meas,
+float gauss_pdf(const measurement & value,
+                const measurement & mean,
                 const covariance & S)
 {
-    measurement residual = meas - pred_meas;
+    measurement residual = value - mean;
     residual_check<Model>(residual);
-    float e = 0.5f * sum((residual % solve_(S, residual)));
-    //FIXME: static_cast<float> - явная бредятина (наверное)
-    e += 0.5f * (size(meas).n_rows * static_cast<float>(log(2.0 * M_PI))) +
-         0.5f + log(det(S));
+    float e = 0.5f * sum_((residual % solve_(S, residual)));
+    e += 0.5f * (n_rows(size_(value)) * static_cast<float>(std::log(2.0 * M_PI))) +
+         0.5f + std::log(determinant(S));
     return std::exp(-e);
 }
 
 template<typename measurement,
          typename covariance>
-float gauss_pdf(const measurement & meas,
-                const measurement & pred_meas,
+float gauss_pdf(const measurement & value,
+                const measurement & mean,
                 const covariance & S)
 {
-    measurement residual = meas - pred_meas;
-    float e = 0.5f * sum((residual % solve_(S, residual)));
-    //FIXME: static_cast<float> - явная бредятина (наверное)
-    e += 0.5f * (size(meas).n_rows * static_cast<float>(log(2.0 * M_PI))) +
-         0.5f + log(det(S));
+    measurement residual = value - mean;
+    float e = 0.5f * sum_((residual % solve_(S, residual)));
+    e += 0.5f * (n_rows(size_(value)) * static_cast<float>(std::log(2.0 * M_PI))) +
+         0.5f + std::log(determinant(S));
     return std::exp(-e);
 }
 
