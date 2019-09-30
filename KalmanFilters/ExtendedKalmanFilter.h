@@ -1,7 +1,7 @@
 #ifndef EXTENDEDKALMANFILTER_H
 #define EXTENDEDKALMANFILTER_H
 
-#include <CheckResidual.h>
+#include "CheckResidual.h"
 #include <tuple>
 #include <cmath>
 #include <armadillo>

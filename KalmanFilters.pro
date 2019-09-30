@@ -4,14 +4,14 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        ConstVelocityModel.cpp \
-        main.cpp
+        Example/ConstVelocityModel.cpp \
+        Example/main.cpp
 
 HEADERS += \
-    CheckResidual.h \
-    ConstVelocityModel.h \
-    ExtendedKalmanFilter.h \
-    MathExpressions.h
+    KalmanFilters/CheckResidual.h \
+    Example/ConstVelocityModel.h \
+    KalmanFilters/ExtendedKalmanFilter.h \
+    Example/MathExpressions.h
 
 LIBS += -larmadillo
 LIBS += -lblas
