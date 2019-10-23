@@ -21,21 +21,20 @@ class ExtendedKalmanFilter
 
 
 public:
-    ExtendedKalmanFilter(Model & model)
-        : model_(model){
+    ExtendedKalmanFilter()
+    {}
 
-    }
-
-    float validate_measurements(const measurement_vec & measurements,
+    float validate_measurements(Model & model,
+                                const measurement_vec & measurements,
                                 float dt)
     {
         state_vec           pred_state;
         state_covariance    pred_P;
-        std::tie(pred_state, pred_P)    = predict(dt);
+        std::tie(pred_state, pred_P)    = predict(model, dt);
 
-        measurement_vec     pred_meas   = model_.get_measurements(pred_state);
-        m_jakobian_mat      H           = model_.measurement_jakobian(pred_state);
-        meas_covariance     S           = H * pred_P * transpose(H) + model_.R;
+        measurement_vec     pred_meas   = model.get_measurements(pred_state);
+        m_jakobian_mat      H           = model.measurement_jakobian(pred_state);
+        meas_covariance     S           = H * pred_P * transpose(H) + model.R;
         measurement_vec     residual    = measurements - pred_meas;
 
         residual_check<Model>(residual);
@@ -43,42 +42,44 @@ public:
         return to_scalar((transpose(residual) * inverse(S) * residual));
     }
 
-    float update(const measurement_vec & measurements,
+    float update(Model & model,
+                 const measurement_vec & measurements,
                  float dt)
     {
         state_vec           pred_state;
         state_covariance    pred_P;
-        std::tie(pred_state, pred_P)    = predict(dt);
+        std::tie(pred_state, pred_P)    = predict(model, dt);
 
-        measurement_vec     pred_meas   = model_.get_measurements(pred_state);
-        m_jakobian_mat      H           = model_.measurement_jakobian(pred_state);
-        meas_covariance     S           = H * pred_P * transpose(H) + model_.R;
+        measurement_vec     pred_meas   = model.get_measurements(pred_state);
+        m_jakobian_mat      H           = model.measurement_jakobian(pred_state);
+        meas_covariance     S           = H * pred_P * transpose(H) + model.R;
         filter_gain_mat     W           = pred_P * transpose(H) * inverse(S);
         measurement_vec     residual    = measurements - pred_meas;
 
         residual_check<Model>(residual);
 
-        model_.state    = pred_state + (W * residual);
-        model_.P        = pred_P - W * S * transpose(W);
+        model.state    = pred_state + (W * residual);
+        model.P        = pred_P - W * S * transpose(W);
         //FIXME: need to make gauss_pdf function optional
         return gauss_pdf<Model>(measurements, pred_meas, S);
     }
 
-    void update(float dt)
+    void update(Model & model,
+                float dt)
     {
-        std::tie(model_.state, model_.P) = predict(dt);
+        std::tie(model.state, model.P) = predict(dt);
     }
 
 
 private:
-    Model & model_;
 
     std::tuple<state_vec, state_covariance>
-    predict(float dt)
+    predict(Model & model,
+            float dt)
     {
-        state_vec           state   = model_.f_func(model_.state, dt);
-        state_covariance    A       = model_.f_jakobian(model_.state, dt);
-        state_covariance    P       = A * model_.P * transpose(A) + model_.Q;
+        state_vec           state   = model.f_func(model.state, dt);
+        state_covariance    A       = model.f_jakobian(model.state, dt);
+        state_covariance    P       = A * model.P * transpose(A) + model.Q;
         return std::make_tuple(state, P);
     }
 };

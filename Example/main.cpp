@@ -16,9 +16,9 @@ int main()
         {   0,    0,   0,  5000000}
     };
     ConstVelocityModel::measurement_vec meas = {1.0f, 1.1f};
-    KalmanFilters::ExtendedKalmanFilter<ConstVelocityModel> filter(model);
-    cout << filter.validate_measurements(meas, 6) << endl;
-    filter.update(meas, 6);
+    KalmanFilters::ExtendedKalmanFilter<ConstVelocityModel> filter;
+    cout << filter.validate_measurements(model, meas, 6) << endl;
+    filter.update(model, meas, 6);
     model.state.print("state");
     return 0;
 }
