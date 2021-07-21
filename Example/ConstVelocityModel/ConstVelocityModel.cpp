@@ -1,3 +1,4 @@
+/*
 #include "ConstVelocityModel.h"
 #include <cmath>
 
@@ -63,11 +64,11 @@ ConstVelocityModel::f_func(const ConstVelocityModel::state_vec &state, float dt)
 ConstVelocityModel::state_covariance
 ConstVelocityModel::f_jakobian(const ConstVelocityModel::state_vec &state, float dt)
 {
-    return state_covariance{
-        {1.0,   0,  dt,   0},
-        {  0, 1.0,   0,  dt},
-        {  0,   0, 1.0,   0},
-        {  0,   0,   0, 1.0}
+        return state_covariance{
+            {1.0,   0,  dt,   0},
+            {  0, 1.0,   0,  dt},
+            {  0,   0, 1.0,   0},
+            {  0,   0,   0, 1.0}
     };
 }
 
@@ -82,3 +83,4 @@ void ConstVelocityModel::residual_check(ConstVelocityModel::measurement_vec &res
         }
     }
 }
+*/

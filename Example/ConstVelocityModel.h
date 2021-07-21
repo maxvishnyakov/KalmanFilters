@@ -1,3 +1,4 @@
+/*
 #ifndef CONSTVELOCITYMODEL_H
 #define CONSTVELOCITYMODEL_H
 
@@ -63,3 +64,4 @@ public:
 };
 
 #endif // CONSTVELOCITYMODEL_H
+*/
