@@ -4,9 +4,6 @@
 #include <tuple>
 #include <cmath>
 
-#include "CheckResidual.h"
-#include "GaussPdf.h"
-
 namespace KalmanFilters {
 
 template <typename Model>
@@ -38,9 +35,6 @@ public:
         meas_covariance     S           = H * pred_P * transpose(H) + model.R;
         measurement_vec     residual    = measurements - pred_meas;
 
-        residual_check<Model>(residual);
-
-        return to_scalar((transpose(residual) * inverse(S) * residual));
     }
 
     float update(Model & model,
@@ -57,12 +51,9 @@ public:
         filter_gain_mat     W           = pred_P * transpose(H) * inverse(S);
         measurement_vec     residual    = measurements - pred_meas;
 
-        residual_check<Model>(residual);
-
         model.state    = pred_state + (W * residual);
         model.P        = pred_P - W * S * transpose(W);
-        //FIXME: need to make gauss_pdf function optional
-        return gauss_pdf<Model>(measurements, pred_meas, S);
+
     }
 
     void update(Model & model,
@@ -85,6 +76,19 @@ private:
     }
 };
 
-} //namespace KalmanFilters
+}
 
 #endif // EXTENDEDKALMANFILTER_H
+
+/*
+std::tuple<state_vec, state_covariance>
+predict(Model & model,
+        float dt)
+{
+    state_vec           state   = model.f_func(model.state, dt);
+    state_covariance    A       = model.f_jakobian(model.state, dt);
+    state_covariance    P       = A * model.P * transpose(A) + model.Q;
+    return std::make_tuple(state, P);
+}
+};
+*/

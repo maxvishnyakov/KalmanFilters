@@ -43,7 +43,7 @@ std::tuple<std::vector<float>, std::vector<float>> filter_values_x_y(std::vector
     model.state = {x_meas[0], y_meas[0], 0, 0};
     ConstCarModel_X_Y::measurement_vec meas;
     std::vector<float> x_output, y_output;
-    for(int i = 0; i < 150; ++i)
+    for(int i = 0; i < 200; ++i)
     {
         meas = {x_meas[i], y_meas[i]};
         filter.update(model, meas, 1);
@@ -53,9 +53,9 @@ std::tuple<std::vector<float>, std::vector<float>> filter_values_x_y(std::vector
     return std::make_tuple(x_output, y_output);
 }
 
-void write_out_values_x_y(std::vector<float> & x_output, std::vector<float> & y_output, ofstream & fout)
+void write_out_values_a_y(std::vector<float> & x_output, std::vector<float> & y_output, ofstream & fout)
 {
-    for(int i = 0; i < 150; ++i)
+    for(int i = 0; i < 200; ++i)
     {
         fout<<to_string(x_output[i])<<" "
            <<to_string(y_output[i])<<"\n";
@@ -78,7 +78,7 @@ int main()
         std::tie(x_meas, y_meas) = get_measurements_x_y(fin);
         std::vector<float> x_output, y_output;
         std::tie(x_output, y_output) = filter_values_x_y(x_meas, y_meas);
-        write_out_values_x_y(x_output, y_output, fout);
+        write_out_values_a_y(x_output, y_output, fout);
     }
 
     fin.close();
