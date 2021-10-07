@@ -16,7 +16,7 @@ ConstCarModel_A_R::state_covariance ConstCarModel_A_R::Q
 ConstCarModel_A_R::meas_covariance ConstCarModel_A_R::R
 {
      {(0.5*M_PI/180),    0},
-     {             0,  (0.5*M_PI/180)},
+     {             0,  50},
 };
 
 ConstCarModel_A_R::measurement_vec
@@ -26,8 +26,9 @@ ConstCarModel_A_R::get_measurements(const ConstCarModel_A_R::state_vec &state)
     const float & x = state.at(StateX);
     const float & y = state.at(StateY);
 
+    float den_r = pow(x,2) + pow(y,2);
     float a_meas = atan2(y,x);
-    float r_meas = sin(a_meas) / x;
+    float r_meas = pow(den_r, 1/2);
 
     ret.at(0) = a_meas;
     ret.at(1) = r_meas;
