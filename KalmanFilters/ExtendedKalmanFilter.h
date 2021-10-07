@@ -4,8 +4,6 @@
 #include <tuple>
 #include <cmath>
 
-using namespace std;
-
 namespace KalmanFilters {
 
 template <typename Model>
@@ -50,8 +48,6 @@ public:
         measurement_vec     pred_meas   = model.get_measurements(pred_state);
         m_jakobian_mat      H           = model.measurement_jakobian(pred_state);
         meas_covariance     S           = H * pred_P * transpose(H) + model.R;
-        cout<<H<<endl;
-        cout<<S<<endl;
         filter_gain_mat     W           = pred_P * transpose(H) * inverse(S);
         measurement_vec     residual    = measurements - pred_meas;
 
