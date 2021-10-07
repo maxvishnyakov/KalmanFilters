@@ -16,7 +16,7 @@ ConstCarModel_A_R::state_covariance ConstCarModel_A_R::Q
 ConstCarModel_A_R::meas_covariance ConstCarModel_A_R::R
 {
      {(0.5*M_PI/180),    0},
-     {             0,   50},
+     {             0,  (0.5*M_PI/180)},
 };
 
 ConstCarModel_A_R::measurement_vec
@@ -42,6 +42,27 @@ ConstCarModel_A_R::measurement_jakobian(const ConstCarModel_A_R::state_vec &stat
     auto x = state.at(0);
     auto y = state.at(1);
 
+    auto denominator_da_dx = (pow(x,2) * (1 + pow(x,2)/pow(y,2)));
+    auto denominator_da_dy = x * (1 + pow(x,2)/pow(y,2));
+    auto da_dx = -(y/denominator_da_dx);
+    auto da_dy = 1 / denominator_da_dy;
+
+    auto denominator_dr = pow(x,2) + pow(y,2);
+    auto dr_dx = x / pow(denominator_dr, 1/2);
+    auto dr_dy = y / pow(denominator_dr, 1/2);
+
+    ret(0,0) = da_dx;
+    ret(0,1) = da_dy;
+    ret(1,0) = dr_dx;
+    ret(1,1) = dr_dy;
+
+    return ret;
+
+    /*
+    m_jakobian_mat ret(arma::fill::zeros);
+    auto x = state.at(0);
+    auto y = state.at(1);
+
     auto da_dx = -(y/(1 + pow(y,2)));
     auto da_dy = (x/1+ pow((y/x),2));
 
@@ -55,6 +76,7 @@ ConstCarModel_A_R::measurement_jakobian(const ConstCarModel_A_R::state_vec &stat
     ret(1,1) = dr_dy;
 
     return ret;
+    */
 }
 
 ConstCarModel_A_R::state_vec
