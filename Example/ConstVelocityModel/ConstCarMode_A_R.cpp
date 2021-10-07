@@ -22,9 +22,6 @@ ConstCarModel_A_R::meas_covariance ConstCarModel_A_R::R
 ConstCarModel_A_R::measurement_vec
 ConstCarModel_A_R::get_measurements(const ConstCarModel_A_R::state_vec &state)
 {
-    return {state.at(StateX), state.at(StateY)};
-
-    /*
     measurement_vec ret;
     const float & x = state.at(StateX);
     const float & y = state.at(StateY);
@@ -36,7 +33,6 @@ ConstCarModel_A_R::get_measurements(const ConstCarModel_A_R::state_vec &state)
     ret.at(1) = r_meas;
 
     return ret;
-    */
 }
 
 ConstCarModel_A_R::m_jakobian_mat
