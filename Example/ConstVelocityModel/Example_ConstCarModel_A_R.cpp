@@ -32,13 +32,13 @@ std::tuple<std::vector<float>, std::vector<float>> get_measurements_a_r(ifstream
         {
             break;
         }
-        std::string::size_type pos = temp.find("[");
+        std::string::size_type pos = temp.find("{");
         string x_temp = temp.substr(pos + 1);
         pos = x_temp.find(", ");
         string x_value = x_temp.substr(0 , pos);
         a_meas.push_back(stof(x_value));
 
-        pos = x_temp.find("]");
+        pos = x_temp.find("}");
         string y_temp = x_temp.substr(0, pos);
         pos = y_temp.find(", ");
         string y_value = y_temp.substr(pos + 1);
@@ -52,6 +52,12 @@ std::tuple<std::vector<float>, std::vector<float>> filter_values_a_r(std::vector
     ConstCarModel_A_R model;
     KalmanFilters::ExtendedKalmanFilter<ConstCarModel_A_R> filter;
     model.state = {x_meas[0], y_meas[0], 0, 0};
+    model.P = {
+        {1000000,    0,   0,    0},
+        {   0, 1000000,   0,    0},
+        {   0,    0, 5000000,    0},
+        {   0,    0,   0,  5000000}
+    };
     ConstCarModel_A_R::measurement_vec meas;
     std::vector<float> x_output, y_output;
     for(int i = 0; i < 200; ++i)
@@ -78,7 +84,7 @@ void write_out_values_a_r(std::vector<float> & a_output, std::vector<float> & r_
 int main()
 {
     ifstream fin;
-    fin.open("/home/vishnyakov/work/python/filter/meas_values_x_y_a_r", ios_base::in);
+    fin.open("/home/vishnyakov/work/python/filter/1_meas_values_x_y", ios_base::in);
 
     ofstream fout;
     fout.open("/home/vishnyakov/work/python/filter/filter_values_x_y_a_r", ios_base::out);

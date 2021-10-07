@@ -28,7 +28,7 @@ ConstCarModel_A_R::get_measurements(const ConstCarModel_A_R::state_vec &state)
 
     float den_r = pow(x,2) + pow(y,2);
     float a_meas = atan2(y,x);
-    float r_meas = pow(den_r, 1/2);
+    float r_meas = sqrt(den_r);
 
     ret.at(0) = a_meas;
     ret.at(1) = r_meas;
@@ -49,8 +49,8 @@ ConstCarModel_A_R::measurement_jakobian(const ConstCarModel_A_R::state_vec &stat
     auto da_dy = 1 / denominator_da_dy;
 
     auto denominator_dr = pow(x,2) + pow(y,2);
-    auto dr_dx = x / pow(denominator_dr, 1/2);
-    auto dr_dy = y / pow(denominator_dr, 1/2);
+    auto dr_dx = x / sqrt(denominator_dr);
+    auto dr_dy = y / sqrt(denominator_dr);
 
     ret(0,0) = da_dx;
     ret(0,1) = da_dy;
