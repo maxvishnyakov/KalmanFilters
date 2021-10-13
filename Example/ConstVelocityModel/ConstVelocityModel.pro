@@ -4,12 +4,12 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    ConstCarMode_A_R.cpp \
+    ConstCarModel_A_R.cpp \
     Example_ConstCarModel_A_R.cpp
 
 HEADERS += \
     ../MathExpressions.h \
-    ConstCarMode_A_R.h
+    ConstCarModel_A_R.h
 
 INCLUDEPATH += $$PWD/../../KalmanFilters
 
