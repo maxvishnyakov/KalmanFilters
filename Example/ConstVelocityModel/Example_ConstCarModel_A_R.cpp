@@ -51,33 +51,33 @@ std::tuple<std::vector<float>, std::vector<float>> filter_values_a_r(std::vector
 {
     ConstCarModel_A_R model;
     KalmanFilters::ExtendedKalmanFilter<ConstCarModel_A_R> filter;
-    model.state = {a_meas[0], r_meas[0], 0, 0};
+    model.state = {1, 1, 0, 0};
     model.P = {
-        {1000000,    0,   0,    0},
-        {   0, 1000000,   0,    0},
-        {   0,    0, 5000000,    0},
-        {   0,    0,   0,  5000000}
+        {100000,    0,   0,    0},
+        {   0,  100000,   0,    0},
+        {   0,    0,   5000,    0},
+        {   0,    0,   0,     5000}
     };
     ConstCarModel_A_R::measurement_vec meas;
-    std::vector<float> a_output, r_output;
-    for(int i = 0; i < 200; ++i)
+    std::vector<float> x_output, y_output;
+    for(int i = 0; i < 199; ++i)
     {
         meas = {a_meas[i], r_meas[i]};
         filter.update(model, meas, 1);
-        a_output.push_back(model.state.at(0));
-        r_output.push_back(model.state.at(1));
+        x_output.push_back(model.state.at(0));
+        y_output.push_back(model.state.at(1));
     }
-    return std::make_tuple(a_output, r_output);
+    return std::make_tuple(x_output, y_output);
 }
 
-void write_out_values_a_r(std::vector<float> & a_output, std::vector<float> & r_output, ofstream & fout)
+void write_out_values_x_y(std::vector<float> & a_output, std::vector<float> & r_output, ofstream & fout)
 {
-    for(int i = 0; i < 200; ++i)
+    for(int i = 0; i < 199; ++i)
     {
-        fout<<to_string(a_output[i])<<" "
-           <<to_string(r_output[i])<<"\n";
+        fout<<"{"<<to_string(a_output[i])<<","
+           <<to_string(r_output[i])<<"}"<<"\n";
     }
-    fout<<"\n";
+     fout<<"\n";
 }
 
 
@@ -89,13 +89,14 @@ int main()
     ofstream fout;
     fout.open("/home/vishnyakov/work/python/filter/filter_values_x_y_a_r", ios_base::out);
 
+    //TODO: изменить на проверку: конец ли файла ?
     for(int i = 0; i < 5; ++i)
     {
         std::vector<float> a_meas, r_meas;
         std::tie(a_meas, r_meas) = get_measurements_a_r(fin);
-        std::vector<float> a_output, r_output;
-        std::tie(a_output, r_output) = filter_values_a_r(a_meas, r_meas);
-        write_out_values_a_r(a_output, r_output, fout);
+        std::vector<float> x_output, y_output;
+        std::tie(x_output, y_output) = filter_values_a_r(a_meas, r_meas);
+        write_out_values_x_y(x_output, y_output, fout);
     }
 
     fin.close();
