@@ -89,7 +89,7 @@ int main()
     ofstream fout;
     fout.open("/home/vishnyakov/work/python/filter/filter_values_x_y_a_r", ios_base::out);
 
-    //TODO: изменить на проверку: конец ли файла ?
+    //TODO: изменить на проверку: конец ли файла ?/////
     for(int i = 0; i < 5; ++i)
     {
         std::vector<float> a_meas, r_meas;
