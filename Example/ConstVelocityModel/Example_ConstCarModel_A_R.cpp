@@ -8,12 +8,12 @@
 
 using namespace std;
 
-std::tuple<float, float> get_x_y(float a_meas, float r_meas)
+std::tuple<float, float> get_x_y_value(float a_meas, float r_meas)
 {
-    float x_meas = r_meas * sin(a_meas);
-    float y_meas = r_meas * cos(a_meas);
+    float x_meas_value = r_meas * sin(a_meas);
+    float y_meas_value = r_meas * cos(a_meas);
 
-    return std::make_tuple(x_meas, y_meas);
+    return std::make_tuple(x_meas_value, y_meas_value);
 }
 
 std::tuple<std::vector<float>, std::vector<float>> get_measurements_a_r(ifstream & fin)
@@ -44,22 +44,22 @@ std::tuple<std::vector<float>, std::vector<float>> get_measurements_a_r(ifstream
     return std::make_tuple(a_meas, r_meas);
 }
 
-std::tuple<std::vector<float>, std::vector<float>> filter_values_a_r(std::vector<float> & a_meas, std::vector<float> & r_meas)
+std::tuple<std::vector<float>, std::vector<float>> filter_values_x_y(std::vector<float> & a_meas, std::vector<float> & r_meas)
 {
     ConstCarModel_A_R model;
     float x_start, y_start;
-    std::tie(x_start, y_start) = get_x_y(a_meas[0], r_meas[0]);
+    std::tie(x_start, y_start) = get_x_y_value(a_meas[0], r_meas[0]);
     KalmanFilters::ExtendedKalmanFilter<ConstCarModel_A_R> filter;
     model.state = {x_start, y_start, 400, 400};
     model.P = {
-        {500,     0,      0,    0},
-        {   0,  500,      0,    0},
-        {   0,      0,   6400,    0},
-        {   0,      0,    0,     6400}
+        { 50,     0,      0,    0},
+        {   0,   50,      0,    0},
+        {   0,      0,   10,    0},
+        {   0,      0,    0,    10}
     };
     ConstCarModel_A_R::measurement_vec meas;
     std::vector<float> x_output, y_output;
-    for(int i = 0; i < 200; ++i)
+    for(int i = 0; i < 199; ++i)
     {
         meas = {a_meas[i], r_meas[i]};
         filter.update(model, meas, 1);
@@ -69,12 +69,12 @@ std::tuple<std::vector<float>, std::vector<float>> filter_values_a_r(std::vector
     return std::make_tuple(x_output, y_output);
 }
 
-void write_out_values_x_y(std::vector<float> & a_output, std::vector<float> & r_output, ofstream & fout)
+void write_out_values_x_y(std::vector<float> & x_output, std::vector<float> & y_output, ofstream & fout)
 {
-    for(int i = 0; i < 200; ++i)
+    for(int i = 0; i < 199; ++i)
     {
-        fout<<"{"<<to_string(a_output[i])<<","
-           <<to_string(r_output[i])<<"}"<<"\n";
+        fout<<"{"<<to_string(x_output[i])<<","
+           <<to_string(y_output[i])<<"}"<<"\n";
     }
      fout<<"\n";
 }
@@ -94,7 +94,7 @@ int main()
         std::vector<float> a_meas, r_meas;
         std::tie(a_meas, r_meas) = get_measurements_a_r(fin);
         std::vector<float> x_output, y_output;
-        std::tie(x_output, y_output) = filter_values_a_r(a_meas, r_meas);
+        std::tie(x_output, y_output) = filter_values_x_y(a_meas, r_meas);
         write_out_values_x_y(x_output, y_output, fout);
     }
 
