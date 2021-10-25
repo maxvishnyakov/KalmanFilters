@@ -7,7 +7,7 @@
 #include "ExtendedKalmanFilter.h"
 
 using namespace std;
-/////////////////////////////////////////////////////////////
+
 std::tuple<float, float> get_x_y_value(float a_meas, float r_meas)
 {
     float x_meas_value = r_meas * sin(a_meas);
@@ -52,10 +52,10 @@ std::tuple<std::vector<float>, std::vector<float>> filter_values_x_y(std::vector
     KalmanFilters::ExtendedKalmanFilter<ConstCarModel_A_R> filter;
     model.state = {x_start, y_start, 400, 400};
     model.P = {
-        { 50,     0,      0,    0},
-        {   0,   50,      0,    0},
-        {   0,      0,   10,    0},
-        {   0,      0,    0,    10}
+        { 500,     0,      0,    0},
+        {   0,   500,      0,    0},
+        {   0,      0,    5,    0},
+        {   0,      0,    0,    5}
     };
     ConstCarModel_A_R::measurement_vec meas;
     std::vector<float> x_output, y_output;
@@ -88,8 +88,8 @@ int main()
     ofstream fout;
     fout.open("/home/vishnyakov/work/python/filter/filter_values_x_y_a_r", ios_base::out);
 
-    //TODO: изменить на проверку: конец ли файла ?/////
-    for(int i = 0; i < 5; ++i)
+    string temp;
+    while(getline(fin, temp))
     {
         std::vector<float> a_meas, r_meas;
         std::tie(a_meas, r_meas) = get_measurements_a_r(fin);
