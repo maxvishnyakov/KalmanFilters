@@ -50,16 +50,17 @@ std::tuple<std::vector<float>, std::vector<float>> filter_values_x_y(std::vector
     float x_start, y_start;
     std::tie(x_start, y_start) = get_x_y_value(a_meas[0], r_meas[0]);
     KalmanFilters::ExtendedKalmanFilter<ConstCarModel_A_R> filter;
-    model.state = {x_start, y_start, 400, 400};
+    model.state = {x_start, y_start, 0, 0};
     model.P = {
-        { 500,     0,      0,    0},
-        {   0,   500,      0,    0},
-        {   0,      0,    5,    0},
-        {   0,      0,    0,    5}
+        { 1600,     0,      0,      0},
+        {   0,   1600,      0,      0},
+        {   0,      0,   4000,      0},
+        {   0,      0,      0,    4000}
     };
     ConstCarModel_A_R::measurement_vec meas;
     std::vector<float> x_output, y_output;
-    for(int i = 0; i < 199; ++i)
+    int size = a_meas.size();
+    for(int i = 0; i < size; ++i)
     {
         meas = {a_meas[i], r_meas[i]};
         filter.update(model, meas, 1);
@@ -71,7 +72,8 @@ std::tuple<std::vector<float>, std::vector<float>> filter_values_x_y(std::vector
 
 void write_out_values_x_y(std::vector<float> & x_output, std::vector<float> & y_output, ofstream & fout)
 {
-    for(int i = 0; i < 199; ++i)
+    int size = x_output.size();
+    for(int i = 0; i < size ; ++i)
     {
         fout<<"{"<<to_string(x_output[i])<<","
            <<to_string(y_output[i])<<"}"<<"\n";

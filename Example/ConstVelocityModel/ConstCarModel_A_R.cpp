@@ -7,10 +7,10 @@ ConstCarModel_A_R::ConstCarModel_A_R()
 
 ConstCarModel_A_R::state_covariance ConstCarModel_A_R::Q
 {
-    { 0.0001f,       0,        0,         0},
-    {    0,    0.0001f,        0,         0},
-    {    0,         0,    0.0001f,         0},
-    {    0,         0,       0,      0.0001f},
+    { 10.0f,       0,        0,         0},
+    {    0,    10.0f,        0,         0},
+    {    0,         0,    10.0f,        0},
+    {    0,         0,       0,      10.0},
 };
 
 ConstCarModel_A_R::meas_covariance ConstCarModel_A_R::R
