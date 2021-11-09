@@ -16,3 +16,4 @@ INCLUDEPATH += $$PWD/../../KalmanFilters
 LIBS += -larmadillo
 LIBS += -lblas
 LIBS += -llapack
+LIBS += -lboost_program_options

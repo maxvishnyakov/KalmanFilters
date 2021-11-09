@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include "ExtendedKalmanFilter.h"
+#include "boost/program_options.hpp"
 
 using namespace std;
 
@@ -82,14 +83,31 @@ void write_out_values_x_y(std::vector<float> & x_output, std::vector<float> & y_
 }
 
 
-int main()
+int main(int ac, const char *av[])
 {
+    namespace po = boost::program_options;
+
+    po::options_description desc ("Options");
+    desc.add_options()
+      ("input-file", po::value<string>(), "input path")
+      ("ouput-file", po::value<string>(), "output file");
+
+    po::positional_options_description p;
+            p.add("output-file", -1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(ac, av).
+                      options(desc).positional(p).run(), vm);
+    po::notify(vm);
+
+    string file_in = vm["input-file"].as<string>();
     ifstream fin;
-    fin.open("/home/vishnyakov/work/python/filter/generate_a_r", ios_base::in);
-
+    fin.open(file_in, ios_base::in);
+    ///home/vishnyakov/work/python/filter/generate_a_r
+    string file_out =vm["output-file"].as<string>();
     ofstream fout;
-    fout.open("/home/vishnyakov/work/python/filter/filter_values_x_y_a_r", ios_base::out);
-
+    fout.open(file_out, ios_base::out);
+    ///home/vishnyakov/work/python/filter/filter_values_x_y_a_r
     string temp;
     while(getline(fin, temp))
     {
